@@ -18,3 +18,10 @@ const DEFAULT_DEPTH: i64 = 7;
 
 const PROGRAM_DESC: &'static str = "A good old fashioned Rust chess engine";
 const PROGRAM_NAME: &'static str = "Amano";
+
+fn calc_piece_value(pc_inx: usize, sq_idx: usize, color: Option<Color>) -> i64 {
+    match color {
+
+        Some
+    }
+}
