@@ -46,6 +46,71 @@ fn calc_pieces_value(board: &Board) -> i64 {
     }
     result
 }
+
+fn calc_board_value(board: &Board) -> i64 {
+    let w_move = board.side_to_move() == Color::White;
+    let result = match board.status() {
+        BoardStatus::Checkmate => {
+            if w_move {
+                2000
+            } else {
+                -20000
+            }
+        }
+        BoardStatus::Stalemate => 0,
+        BoardStatus::Ongoing => calc_pieces_value(board),
+    };
+    result
+}
+
+fn alpha_beta(
+    board: &Board,
+    depth: i8,
+    is_max: bool,
+    alpha: i64,
+    beta: i64,
+    total: &mut i64,
+) -> i64 {
+    if (depth == 0) || (board.status() != BoardStatus::Ongoing) {
+        *total += 1;
+        let val = calc_board_value(board);
+        return val;
+    }
+
+    let mut alpha = alpha;
+    let mut beta = beta;
+    if is_max {
+        let mut best_val = i64::MIN;
+        let moves = MoveGen::new_legal(&board);
+        let mut result_board = chess::Board::default();
+        for mv in moves {
+            board.make_move(mv, &mut result_board);
+            let value = alpha_beta(&result_board, depth - 1, false, alpha, beta, total);
+            best_val = std::cmp::max(value, best_val);
+            alpha = std::cmp::max(alpha, best_val);
+            if beta <= alpha {
+                break;
+            }
+        }
+        return best_val;
+    } else {
+        let mut best_val = i64::MAX;
+        let moves = MoveGen::new_legal(&board);
+        let mut result_board = chess::Board::default();
+        for mv in moves {
+            board.make_move(mv, &mut result_board);
+
+            let value = alpha_beta(&result_board, depth - 1, true, alpha, beta, total);
+            best_val = std::cmp::min(value, best_val);
+
+            beta = std::cmp::min(beta, best_val);
+            if beta <= alpha {
+                break;
+            }
+        }
+        return best_val;
+    }
+}
 fn main() {
     println!("hello");
 }
