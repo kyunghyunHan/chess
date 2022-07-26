@@ -111,12 +111,12 @@ fn alpha_beta(
         return best_val;
     }
 }
-fn show_board(boad: Board) {
+fn show_board(board: Board) {
     for (&rank, lbl) in ALL_RANKS.iter().zip("12345678".chars()) {
         print!("{}", lbl);
         print!(" ");
         for sq in get_rank(rank) {
-            let pices = boad.piece_on(sq);
+            let pices = board.piece_on(sq);
         }
     }
 }
